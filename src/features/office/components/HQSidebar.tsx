@@ -23,10 +23,10 @@ type HQSidebarProps = {
 };
 
 const TAB_LABELS: Record<HQSidebarTab, string> = {
-  inbox: "Inbox",
-  history: "History",
-  playbooks: "Playbooks",
-  analytics: "Analytics",
+  inbox: "Entrada",
+  history: "Histórico",
+  playbooks: "Manuais",
+  analytics: "Estatísticas",
 };
 
 const PRIMARY_TABS: HQSidebarTab[] = ["inbox", "history", "playbooks"];
@@ -63,10 +63,10 @@ export function HQSidebar({
           onClick={onToggle}
           className="rounded-l-md border border-r-0 border-cyan-500/30 bg-[#06090d]/90 px-1.5 py-2.5 font-mono text-[10px] font-semibold tracking-[0.2em] text-cyan-300 shadow-xl backdrop-blur transition-colors hover:border-cyan-400/50 hover:text-cyan-100"
           aria-expanded={open}
-          aria-label={open ? "Collapse headquarters sidebar" : "Open headquarters sidebar"}
+          aria-label={open ? "Recolher barra lateral do quartel general" : "Abrir barra lateral do quartel general"}
         >
           <span className="block leading-none [writing-mode:vertical-rl]">
-            {open ? "COLLAPSE HQ" : "OPEN HQ"}
+            {open ? "RECOLHER QG" : "ABRIR QG"}
           </span>
         </button>
 
@@ -76,10 +76,10 @@ export function HQSidebar({
             onOpenMarketplace();
           }}
           className="rounded-l-md border border-r-0 border-fuchsia-500/25 bg-[#100611]/90 px-1.5 py-2.5 font-mono text-[10px] font-semibold tracking-[0.2em] text-fuchsia-300/80 shadow-xl backdrop-blur transition-colors hover:border-fuchsia-400/45 hover:text-fuchsia-100"
-          aria-label="Open marketplace"
+          aria-label="Abrir mercado"
         >
           <span className="block leading-none [writing-mode:vertical-rl]">
-            MARKETPLACE
+            MERCADO
           </span>
         </button>
 
@@ -97,10 +97,10 @@ export function HQSidebar({
               : "border-amber-500/25 bg-[#120d06]/90 text-amber-300/80 hover:border-amber-400/45 hover:text-amber-100"
           }`}
           aria-pressed={analyticsOnly}
-          aria-label="Open analytics sidebar"
+          aria-label="Abrir barra lateral de estatísticas"
         >
           <span className="block leading-none [writing-mode:vertical-rl]">
-            ANALYTICS
+            ESTATÍSTICAS
           </span>
         </button>
       </div>
@@ -109,12 +109,12 @@ export function HQSidebar({
         <div className="pointer-events-auto flex h-full w-56 flex-col border-l border-cyan-500/20 bg-black/85 shadow-2xl backdrop-blur">
           <div className="border-b border-cyan-500/15 px-4 py-3">
             <div className="font-mono text-[10px] font-semibold tracking-[0.32em] text-cyan-300/80">
-              {analyticsOnly ? "ANALYTICS" : "HEADQUARTERS"}
+              {analyticsOnly ? "ESTATÍSTICAS" : "QUARTEL GENERAL"}
             </div>
             <div className="mt-1 font-mono text-[11px] text-white/45">
               {analyticsOnly
-                ? "Cost, budgets, and performance intelligence."
-                : "Monitor outputs, runs, and schedules."}
+                ? "Custos, orçamentos e inteligência de performance."
+                : "Monitore resultados, execuções e agendas."}
             </div>
             {!railOnly && onAddAgent ? (
               <button
@@ -122,7 +122,7 @@ export function HQSidebar({
                 onClick={onAddAgent}
                 className="mt-3 rounded border border-cyan-500/20 bg-cyan-500/10 px-2 py-1 font-mono text-[10px] uppercase tracking-[0.16em] text-cyan-200 transition-colors hover:border-cyan-400/40 hover:text-cyan-100"
               >
-                Add Agent
+                Adicionar Agente
               </button>
             ) : null}
             {railOnly ? (
@@ -131,7 +131,7 @@ export function HQSidebar({
                 onClick={() => onTabChange("inbox")}
                 className="mt-3 rounded border border-cyan-500/20 bg-cyan-500/10 px-2 py-1 font-mono text-[10px] uppercase tracking-[0.16em] text-cyan-200 transition-colors hover:border-cyan-400/40 hover:text-cyan-100"
               >
-                Back To HQ
+                Voltar ao QG
               </button>
             ) : null}
           </div>

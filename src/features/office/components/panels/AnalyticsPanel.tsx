@@ -162,31 +162,31 @@ export function AnalyticsPanel({
     <section className="flex h-full min-h-0 flex-col">
       <div className="border-b border-cyan-500/10 px-4 py-3">
         <div className="font-mono text-[11px] uppercase tracking-[0.22em] text-white/70">
-          Analytics
+          Estatísticas
         </div>
         <div className="mt-1 font-mono text-[11px] text-white/40">
-          Real usage, spend, and agent trust metrics for headquarters.
+          Métricas reais de uso, gastos e confiança dos agentes para o QG.
         </div>
       </div>
 
       <div className="min-h-0 flex-1 overflow-y-auto px-4 py-3">
         <div className="grid grid-cols-2 gap-2">
-          <DatePickerField label="Start" value={startDate} onChange={setStartDate} />
-          <DatePickerField label="End" value={endDate} onChange={setEndDate} />
+          <DatePickerField label="Início" value={startDate} onChange={setStartDate} />
+          <DatePickerField label="Fim" value={endDate} onChange={setEndDate} />
         </div>
 
         <div className="mt-2 flex items-center justify-between gap-2">
           <div className="font-mono text-[10px] text-white/35">
             {usage.lastRefreshedAt
-              ? `Last refresh ${new Date(usage.lastRefreshedAt).toLocaleTimeString()}`
-              : "No analytics snapshot yet"}
+              ? `Última atualização às ${new Date(usage.lastRefreshedAt).toLocaleTimeString()}`
+              : "Nenhuma captura de estatísticas ainda"}
           </div>
           <button
             type="button"
             onClick={() => void usage.refresh()}
             className="rounded border border-cyan-500/20 bg-cyan-500/10 px-2 py-1 font-mono text-[10px] uppercase tracking-[0.16em] text-cyan-200 transition-colors hover:border-cyan-400/40 hover:text-cyan-100"
           >
-            Refresh
+            Atualizar
           </button>
         </div>
 
@@ -206,40 +206,40 @@ export function AnalyticsPanel({
           </div>
         ) : settingsLoaded ? (
           <div className="mt-3 rounded border border-emerald-500/20 bg-emerald-500/10 px-3 py-2 font-mono text-[11px] text-emerald-100">
-            Budgets are within threshold.
+            Os orçamentos estão dentro do limite.
           </div>
         ) : null}
 
         <div className="mt-4 grid grid-cols-2 gap-2">
           <StatCard
-            label="Total Spend"
+            label="Gasto Total"
             value={formatCurrency(usage.totals.totalCost)}
-            hint="Selected range."
+            hint="Intervalo selecionado."
           />
           <StatCard
-            label="Total Tokens"
+            label="Total de Tokens"
             value={formatNumber(usage.totals.totalTokens)}
-            hint="Input + output + cache."
+            hint="Entrada + saída + cache."
           />
           <StatCard
-            label="Success Rate"
+            label="Taxa de Sucesso"
             value={formatPercent(performance.fleet.successRate)}
-            hint="Completed runs only."
+            hint="Apenas execuções concluídas."
           />
           <StatCard
-            label="Avg Runtime"
+            label="Tempo Médio"
             value={formatDuration(performance.fleet.avgRuntimeMs)}
-            hint="Session-local run history."
+            hint="Histórico de execução da sessão."
           />
         </div>
 
         <div className="mt-5 rounded border border-white/8 bg-white/[0.03] px-3 py-3">
           <div className="font-mono text-[10px] uppercase tracking-[0.18em] text-white/35">
-            Budget Limits
+            Limites de Orçamento
           </div>
           <div className="mt-3 grid grid-cols-2 gap-2">
             <label className="flex flex-col gap-1">
-              <span className="font-mono text-[10px] text-white/35">Daily USD</span>
+              <span className="font-mono text-[10px] text-white/35">Diário USD</span>
               <input
                 value={formatBudgetInput(budgets.dailySpendLimitUsd)}
                 onChange={(event) =>
@@ -251,7 +251,7 @@ export function AnalyticsPanel({
               />
             </label>
             <label className="flex flex-col gap-1">
-              <span className="font-mono text-[10px] text-white/35">Monthly USD</span>
+              <span className="font-mono text-[10px] text-white/35">Mensal USD</span>
               <input
                 value={formatBudgetInput(budgets.monthlySpendLimitUsd)}
                 onChange={(event) =>
@@ -263,7 +263,7 @@ export function AnalyticsPanel({
               />
             </label>
             <label className="flex flex-col gap-1">
-              <span className="font-mono text-[10px] text-white/35">Per-agent USD</span>
+              <span className="font-mono text-[10px] text-white/35">Por agente USD</span>
               <input
                 value={formatBudgetInput(budgets.perAgentSoftLimitUsd)}
                 onChange={(event) =>
@@ -275,7 +275,7 @@ export function AnalyticsPanel({
               />
             </label>
             <label className="flex flex-col gap-1">
-              <span className="font-mono text-[10px] text-white/35">Alert threshold %</span>
+              <span className="font-mono text-[10px] text-white/35">Limite de alerta %</span>
               <input
                 value={String(budgets.alertThresholdPct)}
                 onChange={(event) =>
@@ -293,13 +293,13 @@ export function AnalyticsPanel({
 
         <div className="mt-5 rounded border border-white/8 bg-white/[0.03] px-3 py-3">
           <div className="font-mono text-[10px] uppercase tracking-[0.18em] text-white/35">
-            Daily Cost
+            Custo Diário
           </div>
           {usage.loading ? (
-            <div className="mt-3 font-mono text-[11px] text-white/40">Loading usage data.</div>
+            <div className="mt-3 font-mono text-[11px] text-white/40">Carregando dados de uso.</div>
           ) : usage.costDaily.length === 0 ? (
             <div className="mt-3 font-mono text-[11px] text-white/35">
-              No cost data in the selected range.
+              Sem dados de custo no intervalo selecionado.
             </div>
           ) : (
             <div className="mt-3 flex items-end gap-1">
@@ -328,20 +328,20 @@ export function AnalyticsPanel({
 
           <div className="mt-4 rounded border border-white/8 bg-black/25 px-3 py-3">
             <div className="font-mono text-[10px] uppercase tracking-[0.16em] text-white/35">
-              Cost Breakdown
+              Detalhamento de Custos
             </div>
             <div className="mt-2 space-y-1 font-mono text-[11px] text-white/70">
-              <div>Input: {formatCurrency(usage.totals.inputCost)}.</div>
-              <div>Output: {formatCurrency(usage.totals.outputCost)}.</div>
-              <div>Cache read: {formatCurrency(usage.totals.cacheReadCost)}.</div>
-              <div>Cache write: {formatCurrency(usage.totals.cacheWriteCost)}.</div>
+              <div>Entrada: {formatCurrency(usage.totals.inputCost)}.</div>
+              <div>Saída: {formatCurrency(usage.totals.outputCost)}.</div>
+              <div>Leitura de cache: {formatCurrency(usage.totals.cacheReadCost)}.</div>
+              <div>Escrita de cache: {formatCurrency(usage.totals.cacheWriteCost)}.</div>
             </div>
           </div>
         </div>
 
         <div className="mt-5 rounded border border-white/8 bg-white/[0.03] px-3 py-3">
           <div className="font-mono text-[10px] uppercase tracking-[0.18em] text-white/35">
-            Top Agents By Spend
+            Agentes que Mais Gastam
           </div>
           <div className="mt-3 space-y-2">
             {usage.aggregates.byAgent.slice(0, 6).map((entry) => (
@@ -358,14 +358,14 @@ export function AnalyticsPanel({
               </button>
             ))}
             {usage.aggregates.byAgent.length === 0 ? (
-              <div className="font-mono text-[11px] text-white/35">No agent spend data yet.</div>
+              <div className="font-mono text-[11px] text-white/35">Ainda sem dados de gastos por agente.</div>
             ) : null}
           </div>
         </div>
 
         <div className="mt-5 rounded border border-white/8 bg-white/[0.03] px-3 py-3">
           <div className="font-mono text-[10px] uppercase tracking-[0.18em] text-white/35">
-            Model Breakdown
+            Detalhamento por Modelo
           </div>
           <div className="mt-3 space-y-2">
             {usage.aggregates.byModel.slice(0, 6).map((entry) => (
@@ -382,35 +382,35 @@ export function AnalyticsPanel({
               </div>
             ))}
             {usage.aggregates.byModel.length === 0 ? (
-              <div className="font-mono text-[11px] text-white/35">No model usage data yet.</div>
+              <div className="font-mono text-[11px] text-white/35">Ainda sem dados de uso por modelo.</div>
             ) : null}
           </div>
         </div>
 
         <div className="mt-5 rounded border border-white/8 bg-white/[0.03] px-3 py-3">
           <div className="font-mono text-[10px] uppercase tracking-[0.18em] text-white/35">
-            Performance
+            Desempenho
           </div>
           <div className="mt-3 grid grid-cols-2 gap-2">
             <StatCard
-              label="Approvals"
+              label="Aprovações"
               value={formatNumber(approvalMetrics.totals.requestedCount)}
-              hint="Session-local approval requests."
+              hint="Solicitações locais da sessão."
             />
             <StatCard
-              label="Intervention Rate"
+              label="Intervenção"
               value={formatPercent(performance.fleet.interventionRate)}
-              hint="Approvals per observed run."
+              hint="Aprovações por execução."
             />
             <StatCard
-              label="Tool Calls"
+              label="Ferramentas"
               value={formatNumber(performance.fleet.totalToolCalls)}
-              hint="Current transcript state."
+              hint="Estado atual da sessão."
             />
             <StatCard
-              label="Completed Runs"
+              label="Concluídos"
               value={formatNumber(performance.fleet.completedRuns)}
-              hint="In-memory office run log."
+              hint="Log local da sessão."
             />
           </div>
 
@@ -427,20 +427,20 @@ export function AnalyticsPanel({
                     {row.agentName}
                   </span>
                   <span className="font-mono text-[10px] text-white/40">
-                    {row.totalRuns} runs
+                    {row.totalRuns} execuções
                   </span>
                 </div>
                 <div className="mt-3 grid grid-cols-2 gap-2 font-mono text-[10px] text-white/55">
-                  <div>Success: {formatPercent(row.successRate)}.</div>
-                  <div>Avg runtime: {formatDuration(row.avgRuntimeMs)}.</div>
-                  <div>Tool calls: {formatNumber(row.toolCalls)}.</div>
-                  <div>Approvals: {formatNumber(row.approvalRequestedCount)}.</div>
+                  <div>Sucesso: {formatPercent(row.successRate)}.</div>
+                  <div>Tempo médio: {formatDuration(row.avgRuntimeMs)}.</div>
+                  <div>Ferramentas: {formatNumber(row.toolCalls)}.</div>
+                  <div>Aprovações: {formatNumber(row.approvalRequestedCount)}.</div>
                 </div>
               </button>
             ))}
             {performance.rows.length === 0 ? (
               <div className="font-mono text-[11px] text-white/35">
-                No performance data is available yet.
+                Ainda sem dados de desempenho disponíveis.
               </div>
             ) : null}
           </div>

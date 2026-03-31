@@ -65,7 +65,7 @@ export function SettingsPanel({
   const normalizedGatewayUrl = gatewayUrl?.trim() ?? "";
   const gatewayStateLabel = gatewayStatus
     ? gatewayStatus.charAt(0).toUpperCase() + gatewayStatus.slice(1)
-    : "Unknown";
+    : "Desconhecido";
   const gatewayDisconnectDisabled = gatewayStatus !== "connected";
   const [remoteOfficeTokenDraft, setRemoteOfficeTokenDraft] = useState("");
 
@@ -74,13 +74,13 @@ export function SettingsPanel({
       <div className="rounded-lg border border-cyan-500/10 bg-black/20 px-4 py-3">
         <div className="flex items-start justify-between gap-3">
           <div>
-            <div className="text-[11px] font-medium text-white">Studio title</div>
+            <div className="text-[11px] font-medium text-white">Título do Studio</div>
             <div className="mt-1 text-[10px] text-white/75">
-              Customize the banner shown at the top of the office.
+              Personalize o banner exibido no topo do escritório.
             </div>
           </div>
           <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-cyan-200/70">
-            {officeTitleLoaded ? "Ready" : "Loading"}
+            {officeTitleLoaded ? "Pronto" : "Carregando"}
           </span>
         </div>
         <input
@@ -89,11 +89,11 @@ export function SettingsPanel({
           maxLength={48}
           disabled={!officeTitleLoaded}
           onChange={(event) => onOfficeTitleChange(event.target.value)}
-          placeholder="Luke Headquarters"
+          placeholder="Sede da Empresa"
           className="mt-3 w-full rounded-md border border-cyan-500/10 bg-black/25 px-3 py-2 text-[11px] uppercase tracking-[0.18em] text-cyan-100 outline-none transition-colors placeholder:text-cyan-100/30 focus:border-cyan-400/30 disabled:cursor-not-allowed disabled:opacity-50"
         />
         <div className="mt-2 text-[10px] text-white/50">
-          Used in the office scene header.
+          Usado no cabeçalho da cena do escritório.
         </div>
       </div>
       <div className="mt-3 rounded-lg border border-cyan-500/10 bg-black/20 px-4 py-3">
@@ -101,7 +101,7 @@ export function SettingsPanel({
           <div>
             <div className="text-[11px] font-medium text-white">Gateway</div>
             <div className="mt-1 text-[10px] text-white/75">
-              Current studio connection and endpoint details.
+              Conexão atual do studio e detalhes do endpoint.
             </div>
           </div>
           <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-cyan-200/70">
@@ -109,11 +109,11 @@ export function SettingsPanel({
           </span>
         </div>
         <div className="mt-3 rounded-md border border-cyan-500/10 bg-black/25 px-3 py-2 font-mono text-[10px] text-cyan-100/80">
-          {normalizedGatewayUrl || "No gateway URL configured."}
+          {normalizedGatewayUrl || "Nenhuma URL de gateway configurada."}
         </div>
         <div className="mt-3 flex items-center justify-between gap-3">
           <div className="text-[10px] text-white/60">
-            Disconnecting returns you to the gateway connect screen.
+            Desconectar retornará você à tela de conexão do gateway.
           </div>
           <button
             type="button"
@@ -121,20 +121,20 @@ export function SettingsPanel({
             disabled={gatewayDisconnectDisabled}
             className="rounded-md border border-rose-500/20 bg-rose-500/10 px-3 py-1.5 text-[10px] font-medium uppercase tracking-[0.14em] text-rose-100 transition-colors hover:border-rose-400/40 hover:bg-rose-500/15 disabled:cursor-not-allowed disabled:opacity-40"
           >
-            Disconnect gateway
+            Desconectar gateway
           </button>
         </div>
       </div>
       <div className="mt-3 rounded-lg border border-cyan-500/10 bg-black/20 px-4 py-3">
         <div className="flex items-start justify-between gap-3">
           <div>
-            <div className="text-[11px] font-medium text-white">Remote office</div>
+            <div className="text-[11px] font-medium text-white">Escritório remoto</div>
             <div className="mt-1 text-[10px] text-white/75">
-              Attach a second read-only office from either another Claw3D or a remote OpenClaw gateway.
+              Anexe um segundo escritório apenas para leitura de outro Claw3D ou de um gateway OpenClaw remoto.
             </div>
           </div>
           <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-cyan-200/70">
-            {remoteOfficeEnabled ? "Enabled" : "Disabled"}
+            {remoteOfficeEnabled ? "Ativado" : "Desativado"}
           </span>
         </div>
         <div className="ui-settings-row mt-3 flex min-h-[72px] items-center justify-between gap-6 rounded-lg border border-cyan-500/10 bg-black/15 px-4 py-3">
@@ -142,7 +142,7 @@ export function SettingsPanel({
             <button
               type="button"
               role="switch"
-              aria-label="Remote office"
+              aria-label="Escritório remoto"
               aria-checked={remoteOfficeEnabled}
               className={`ui-switch self-center ${remoteOfficeEnabled ? "ui-switch--on" : ""}`}
               onClick={() => onRemoteOfficeEnabledChange(!remoteOfficeEnabled)}
@@ -150,20 +150,20 @@ export function SettingsPanel({
               <span className="ui-switch-thumb" />
             </button>
             <div className="flex flex-col">
-              <span className="text-[11px] font-medium text-white">Show second office</span>
+              <span className="text-[11px] font-medium text-white">Mostrar segundo escritório</span>
               <span className="text-[10px] text-white/80">
-                Remote agents stay visible but non-interactive.
+                Agentes remotos ficam visíveis, mas não interativos.
               </span>
             </div>
           </div>
           <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-cyan-200/70">
-            {remoteOfficeTokenConfigured ? "Token set" : "No token"}
+            {remoteOfficeTokenConfigured ? "Token definido" : "Sem token"}
           </span>
         </div>
         <div className="mt-3 grid gap-3">
           <div>
             <div className="mb-1 text-[10px] uppercase tracking-[0.14em] text-cyan-100/65">
-              Source type
+              Tipo de fonte
             </div>
             <select
               value={remoteOfficeSourceKind}
@@ -174,23 +174,23 @@ export function SettingsPanel({
               }
               className="w-full rounded-md border border-cyan-500/10 bg-black/25 px-3 py-2 text-[11px] text-cyan-100 outline-none transition-colors focus:border-cyan-400/30"
             >
-              <option value="presence_endpoint">Remote Claw3D presence endpoint</option>
-              <option value="openclaw_gateway">Remote OpenClaw gateway</option>
+              <option value="presence_endpoint">Endpoint de presença remoto Claw3D</option>
+              <option value="openclaw_gateway">Gateway remoto OpenClaw</option>
             </select>
             <div className="mt-1 text-[10px] text-white/50">
-              Use a presence endpoint when the other machine runs Claw3D. Use gateway mode when the other machine only runs OpenClaw.
+              Use um endpoint de presença quando a outra máquina rodar o Claw3D. Use o modo gateway quando a outra máquina rodar apenas o OpenClaw.
             </div>
           </div>
           <div>
             <div className="mb-1 text-[10px] uppercase tracking-[0.14em] text-cyan-100/65">
-              Label
+              Rótulo
             </div>
             <input
               type="text"
               value={remoteOfficeLabel}
               maxLength={48}
               onChange={(event) => onRemoteOfficeLabelChange(event.target.value)}
-              placeholder="Remote Office"
+              placeholder="Escritório Remoto"
               className="w-full rounded-md border border-cyan-500/10 bg-black/25 px-3 py-2 text-[11px] uppercase tracking-[0.14em] text-cyan-100 outline-none transition-colors placeholder:text-cyan-100/30 focus:border-cyan-400/30"
             />
           </div>
@@ -198,7 +198,7 @@ export function SettingsPanel({
             <>
               <div>
                 <div className="mb-1 text-[10px] uppercase tracking-[0.14em] text-cyan-100/65">
-                  Presence URL
+                  URL de Presença
                 </div>
                 <input
                   type="url"
@@ -208,12 +208,12 @@ export function SettingsPanel({
                   className="w-full rounded-md border border-cyan-500/10 bg-black/25 px-3 py-2 text-[11px] text-cyan-100 outline-none transition-colors placeholder:text-cyan-100/30 focus:border-cyan-400/30"
                 />
                 <div className="mt-1 text-[10px] text-white/50">
-                  Studio polls this endpoint server-side when the other machine is also running Claw3D.
+                  O Studio consulta este endpoint no servidor quando a outra máquina também está rodando o Claw3D.
                 </div>
               </div>
               <div>
                 <div className="mb-1 text-[10px] uppercase tracking-[0.14em] text-cyan-100/65">
-                  Optional token
+                  Token opcional
                 </div>
                 <div className="flex items-center gap-2">
                   <input
@@ -252,7 +252,7 @@ export function SettingsPanel({
             <>
               <div>
                 <div className="mb-1 text-[10px] uppercase tracking-[0.14em] text-cyan-100/65">
-                  Gateway URL
+                  URL do Gateway
                 </div>
                 <input
                   type="text"
@@ -262,12 +262,12 @@ export function SettingsPanel({
                   className="w-full rounded-md border border-cyan-500/10 bg-black/25 px-3 py-2 text-[11px] text-cyan-100 outline-none transition-colors placeholder:text-cyan-100/30 focus:border-cyan-400/30"
                 />
                 <div className="mt-1 text-[10px] text-white/50">
-                  Claw3D connects from the browser directly to the remote OpenClaw gateway and derives a read-only presence snapshot.
+                  O Claw3D conecta do navegador diretamente ao gateway OpenClaw remoto e deriva um instantâneo de presença apenas para leitura.
                 </div>
               </div>
               <div>
                 <div className="mb-1 text-[10px] uppercase tracking-[0.14em] text-cyan-100/65">
-                  Shared gateway token
+                  Token de gateway compartilhado
                 </div>
                 <div className="flex items-center gap-2">
                   <input
@@ -301,7 +301,7 @@ export function SettingsPanel({
                   ) : null}
                 </div>
                 <div className="mt-1 text-[10px] text-white/50">
-                  Optional. Browser-based remote presence and messaging can work without it when the remote gateway already allows your Control UI origin.
+                  Opcional. A presença remota e as mensagens baseadas no navegador podem funcionar sem ele quando o gateway remoto já permite a origem da sua UI de Controle.
                 </div>
               </div>
             </>
@@ -311,9 +311,9 @@ export function SettingsPanel({
       <div className="mt-3 rounded-lg border border-cyan-500/10 bg-black/20 px-4 py-3">
         <div className="flex items-start justify-between gap-3">
           <div>
-            <div className="text-[11px] font-medium text-white">Onboarding</div>
+            <div className="text-[11px] font-medium text-white">Integração (Onboarding)</div>
             <div className="mt-1 text-[10px] text-white/75">
-              Re-open the onboarding wizard to test the new-user flow.
+              Abra novamente o assistente de integração para testar o fluxo de novo usuário.
             </div>
           </div>
           <button
@@ -321,7 +321,7 @@ export function SettingsPanel({
             onClick={() => onOpenOnboarding?.()}
             className="rounded-md border border-emerald-500/20 bg-emerald-500/10 px-3 py-1.5 text-[10px] font-medium uppercase tracking-[0.14em] text-emerald-100 transition-colors hover:border-emerald-400/40 hover:bg-emerald-500/15"
           >
-            Launch wizard
+            Iniciar assistente
           </button>
         </div>
       </div>
@@ -330,7 +330,7 @@ export function SettingsPanel({
           <button
             type="button"
             role="switch"
-            aria-label="Voice replies"
+            aria-label="Respostas de voz"
             aria-checked={voiceRepliesEnabled}
             className={`ui-switch self-center ${voiceRepliesEnabled ? "ui-switch--on" : ""}`}
             onClick={() => onVoiceRepliesToggle(!voiceRepliesEnabled)}
@@ -339,20 +339,20 @@ export function SettingsPanel({
             <span className="ui-switch-thumb" />
           </button>
           <div className="flex flex-col">
-            <span className="text-[11px] font-medium text-white">Voice replies</span>
+            <span className="text-[11px] font-medium text-white">Respostas de voz</span>
             <span className="text-[10px] text-white/80">
-              Play finalized assistant replies with a natural voice.
+              Reproduza respostas finalizadas do assistente com uma voz natural.
             </span>
           </div>
         </div>
         <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-cyan-200/70">
-          {voiceRepliesLoaded ? (voiceRepliesEnabled ? "On" : "Off") : "Loading"}
+          {voiceRepliesLoaded ? (voiceRepliesEnabled ? "Ligado" : "Desligado") : "Carregando"}
         </span>
       </div>
       <div className="mt-3 rounded-lg border border-cyan-500/10 bg-black/20 px-4 py-3">
-        <div className="text-[11px] font-medium text-white">Voice</div>
+        <div className="text-[11px] font-medium text-white">Voz</div>
         <div className="mt-1 text-[10px] text-white/75">
-          Choose the voice used for spoken agent replies.
+          Escolha a voz usada para respostas faladas dos agentes.
         </div>
         <div className="mt-3 grid grid-cols-2 gap-2">
           {CURATED_ELEVENLABS_VOICES.map((voice) => {
@@ -382,9 +382,9 @@ export function SettingsPanel({
       <div className="mt-3 rounded-lg border border-cyan-500/10 bg-black/20 px-4 py-3">
         <div className="flex items-center justify-between gap-3">
           <div>
-            <div className="text-[11px] font-medium text-white">Speed</div>
+            <div className="text-[11px] font-medium text-white">Velocidade</div>
             <div className="mt-1 text-[10px] text-white/75">
-              Adjust how fast the selected voice speaks.
+              Ajuste o quão rápido a voz selecionada fala.
             </div>
           </div>
           <span className="font-mono text-[10px] uppercase tracking-[0.14em] text-cyan-200/70">
@@ -404,8 +404,8 @@ export function SettingsPanel({
           className="mt-3 h-2 w-full cursor-pointer appearance-none rounded-full bg-cyan-500/15 accent-cyan-400"
         />
         <div className="mt-1 flex items-center justify-between text-[10px] text-white/45">
-          <span>Slower</span>
-          <span>Faster</span>
+          <span>Mais devagar</span>
+          <span>Mais rápido</span>
         </div>
       </div>
     </div>

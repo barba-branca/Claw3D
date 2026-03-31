@@ -40,10 +40,10 @@ export function OfficeBuilderPanel({ initialMap, workspaceId, officeId }: Office
       }),
     });
     if (!response.ok) {
-      setMessage("save failed");
+      setMessage("falha ao salvar");
       return;
     }
-    setMessage(`saved ${versionId}`);
+    setMessage(`salvo ${versionId}`);
   };
 
   const publishLatest = async () => {
@@ -57,10 +57,10 @@ export function OfficeBuilderPanel({ initialMap, workspaceId, officeId }: Office
       }),
     });
     if (!response.ok) {
-      setMessage("publish failed");
+      setMessage("falha ao publicar");
       return;
     }
-    setMessage("published");
+    setMessage("publicado");
   };
 
   const debug = useMemo(
@@ -77,34 +77,34 @@ export function OfficeBuilderPanel({ initialMap, workspaceId, officeId }: Office
   return (
     <div className="flex h-full w-full gap-3">
       <aside className="ui-panel w-72 shrink-0 overflow-y-auto p-3">
-        <div className="font-mono text-[11px] text-muted-foreground">builder controls</div>
+        <div className="font-mono text-[11px] text-muted-foreground">controles do construtor</div>
         <div className="mt-3 flex flex-col gap-2">
           <button type="button" className="ui-btn-secondary px-2 py-1 text-left text-xs" onClick={store.undo}>
-            undo
+            desfazer
           </button>
           <button type="button" className="ui-btn-secondary px-2 py-1 text-left text-xs" onClick={store.redo}>
-            redo
+            refazer
           </button>
           <button
             type="button"
             className="ui-btn-secondary px-2 py-1 text-left text-xs"
             onClick={() => store.rotateSelected(90)}
           >
-            rotate selected
+            girar selecionado
           </button>
           <button
             type="button"
             className="ui-btn-secondary px-2 py-1 text-left text-xs"
             onClick={() => store.flipSelected("x")}
           >
-            flip selected x
+            espelhar x selecionado
           </button>
           <button
             type="button"
             className="ui-btn-secondary px-2 py-1 text-left text-xs"
             onClick={() => store.flipSelected("y")}
           >
-            flip selected y
+            espelhar y selecionado
           </button>
           <button
             type="button"
@@ -122,7 +122,7 @@ export function OfficeBuilderPanel({ initialMap, workspaceId, officeId }: Office
               })
             }
           >
-            add light
+            adicionar luz
           </button>
           <button
             type="button"
@@ -138,7 +138,7 @@ export function OfficeBuilderPanel({ initialMap, workspaceId, officeId }: Office
               })
             }
           >
-            add emitter
+            adicionar emissor
           </button>
           <button
             type="button"
@@ -153,24 +153,24 @@ export function OfficeBuilderPanel({ initialMap, workspaceId, officeId }: Office
               })
             }
           >
-            add interaction point
+            adicionar ponto de interação
           </button>
           <button type="button" className="ui-btn-primary px-2 py-1 text-left text-xs" onClick={saveVersion}>
-            save version
+            salvar versão
           </button>
           <button type="button" className="ui-btn-primary px-2 py-1 text-left text-xs" onClick={publishLatest}>
-            publish active
+            publicar ativo
           </button>
         </div>
         <div className="mt-4 border-t border-border/50 pt-3">
-          <div className="font-mono text-[11px] text-muted-foreground">simulation toggles</div>
+          <div className="font-mono text-[11px] text-muted-foreground">alternadores de simulação</div>
           <div className="mt-2 flex flex-col gap-2 text-xs">
             <label className="flex items-center justify-between">
-              <span>debug</span>
+              <span>depuração</span>
               <input type="checkbox" checked={showDebug} onChange={(event) => setShowDebug(event.target.checked)} />
             </label>
             <label className="flex items-center justify-between">
-              <span>lighting</span>
+              <span>iluminação</span>
               <input
                 type="checkbox"
                 checked={lightingEnabled}
@@ -178,7 +178,7 @@ export function OfficeBuilderPanel({ initialMap, workspaceId, officeId }: Office
               />
             </label>
             <label className="flex items-center justify-between">
-              <span>ambience</span>
+              <span>ambiente</span>
               <input
                 type="checkbox"
                 checked={ambienceEnabled}
@@ -186,7 +186,7 @@ export function OfficeBuilderPanel({ initialMap, workspaceId, officeId }: Office
               />
             </label>
             <label className="flex items-center justify-between">
-              <span>thought bubbles</span>
+              <span>balões de pensamento</span>
               <input
                 type="checkbox"
                 checked={thoughtEnabled}
@@ -195,7 +195,7 @@ export function OfficeBuilderPanel({ initialMap, workspaceId, officeId }: Office
             </label>
           </div>
         </div>
-        <div className="mt-4 text-xs text-muted-foreground">selected {selectedIds.length}</div>
+        <div className="mt-4 text-xs text-muted-foreground">selecionado(s): {selectedIds.length}</div>
         {message ? <div className="mt-2 text-xs text-muted-foreground">{message}</div> : null}
       </aside>
       <div className="ui-panel min-h-0 flex-1 overflow-hidden p-2">

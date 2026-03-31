@@ -58,42 +58,42 @@ type WizardStepId =
 const wizardSteps: Array<{ id: WizardStepId; label: string; hint: string }> = [
   {
     id: "identity",
-    label: "Identity",
-    hint: "Create the live agent first, then fill in the rest step by step.",
+    label: "Identidade",
+    hint: "Crie o agente primeiro, depois preencha o restante passo a passo.",
   },
   {
     id: "avatar",
     label: "Avatar",
-    hint: "Customize the office appearance before writing the rest of the profile.",
+    hint: "Personalize a aparência no escritório antes de escrever o restante do perfil.",
   },
   {
     id: "SOUL.md",
-    label: "Soul",
+    label: "Alma",
     hint: AGENT_FILE_META["SOUL.md"].hint,
   },
   {
     id: "AGENTS.md",
-    label: "Agents",
+    label: "Agentes",
     hint: AGENT_FILE_META["AGENTS.md"].hint,
   },
   {
     id: "USER.md",
-    label: "User",
+    label: "Usuário",
     hint: AGENT_FILE_META["USER.md"].hint,
   },
   {
     id: "TOOLS.md",
-    label: "Tools",
+    label: "Ferramentas",
     hint: AGENT_FILE_META["TOOLS.md"].hint,
   },
   {
     id: "MEMORY.md",
-    label: "Memory",
+    label: "Memória",
     hint: AGENT_FILE_META["MEMORY.md"].hint,
   },
   {
     id: "HEARTBEAT.md",
-    label: "Heartbeat",
+    label: "Pulsação",
     hint: AGENT_FILE_META["HEARTBEAT.md"].hint,
   },
 ];
@@ -237,13 +237,13 @@ export function AgentCreateWizardModal({
   const stepActionLabel =
     step === "identity" && !createdAgentId
       ? busy
-        ? "Creating..."
-        : "Create and continue"
+        ? "Criando..."
+        : "Criar e continuar"
       : isFinalStep
         ? isWorking
-          ? "Saving..."
-          : "Finish wizard"
-        : "Next";
+          ? "Salvando..."
+          : "Finalizar assistente"
+        : "Próximo";
 
   if (!open) return null;
 
@@ -267,13 +267,13 @@ export function AgentCreateWizardModal({
           <div className="flex items-start justify-between gap-4">
             <div>
               <div className="font-mono text-[11px] font-semibold tracking-[0.06em] text-muted-foreground">
-                New agent wizard
+                Assistente de novo agente
               </div>
               <div className="mt-1 text-lg font-semibold text-foreground">
-                Create an agent step by step
+                Crie um agente passo a passo
               </div>
               <div className="mt-1 text-sm text-muted-foreground">
-                Start with identity, then build the rest of the profile before finishing.
+                Comece com a identidade, depois construa o restante do perfil antes de finalizar.
               </div>
             </div>
             <div className="flex items-center gap-2">
@@ -285,7 +285,7 @@ export function AgentCreateWizardModal({
                   onClose(createdAgentId);
                 }}
               >
-                Close
+                Fechar
               </button>
               {activeStepIndex > 0 ? (
                 <button
@@ -299,7 +299,7 @@ export function AgentCreateWizardModal({
                     }
                   }}
                 >
-                  Back
+                  Voltar
                 </button>
               ) : null}
               <button
@@ -351,7 +351,7 @@ export function AgentCreateWizardModal({
           <div className="flex min-h-0 flex-1 flex-col overflow-y-auto px-6 py-6">
             <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col">
               <section className="space-y-3">
-                <h3 className="text-sm font-medium text-foreground">Identity</h3>
+                <h3 className="text-sm font-medium text-foreground">Identidade</h3>
                 <div className="text-xs text-muted-foreground">
                   Confirm the live agent name first, then fill in the rest of `IDENTITY.md`.
                 </div>
@@ -368,8 +368,8 @@ export function AgentCreateWizardModal({
               </section>
 
               <div className="mt-6 rounded-xl border border-border/45 bg-muted/20 p-4 text-sm text-muted-foreground">
-                Creating the agent in this step makes it available in OpenClaw immediately so the
-                wizard can save the full profile through the gateway in later steps.
+                Criar o agente neste passo o torna disponível no OpenClaw imediatamente para que o
+                assistente possa salvar o perfil completo através do gateway nos passos seguintes.
               </div>
             </div>
           </div>
@@ -392,10 +392,10 @@ export function AgentCreateWizardModal({
               <div className="flex min-h-0 flex-1 flex-col overflow-y-auto px-6 py-6">
                 <div className="mx-auto flex w-full max-w-4xl flex-1 flex-col gap-6 pb-8">
                   <section className="space-y-3">
-                    <h3 className="text-sm font-medium text-foreground">Soul</h3>
+                    <h3 className="text-sm font-medium text-foreground">Alma</h3>
                     <div className="grid gap-4">
                       <WizardTextAreaField
-                        label="Core truths"
+                        label="Verdades fundamentais"
                         value={draft.soul.coreTruths}
                         placeholder="e.g. Protect the user's time. Prefer clarity over theatrics."
                         disabled={isWorking}
@@ -405,7 +405,7 @@ export function AgentCreateWizardModal({
                         }}
                       />
                       <WizardTextAreaField
-                        label="Boundaries"
+                        label="Limites"
                         value={draft.soul.boundaries}
                         placeholder="e.g. Do not bluff. Say when something is uncertain."
                         disabled={isWorking}
@@ -425,7 +425,7 @@ export function AgentCreateWizardModal({
                         }}
                       />
                       <WizardTextAreaField
-                        label="Continuity"
+                        label="Continuidade"
                         value={draft.soul.continuity}
                         placeholder="e.g. Keep naming, preferences, and previous decisions consistent."
                         disabled={isWorking}
@@ -442,10 +442,10 @@ export function AgentCreateWizardModal({
               <div className="flex min-h-0 flex-1 flex-col overflow-y-auto px-6 py-6">
                 <div className="mx-auto flex w-full max-w-4xl flex-1 flex-col gap-6 pb-8">
                   <section className="space-y-3">
-                    <h3 className="text-sm font-medium text-foreground">User</h3>
+                    <h3 className="text-sm font-medium text-foreground">Usuário</h3>
                     <div className="grid gap-4 sm:grid-cols-2">
                       <WizardField
-                        label="Name"
+                        label="Nome"
                         value={draft.user.name}
                         placeholder="e.g. Luke"
                         disabled={isWorking}
@@ -454,7 +454,7 @@ export function AgentCreateWizardModal({
                         }}
                       />
                       <WizardField
-                        label="What to call them"
+                        label="Como chamá-los"
                         value={draft.user.callThem}
                         placeholder="e.g. Luke"
                         disabled={isWorking}
@@ -463,7 +463,7 @@ export function AgentCreateWizardModal({
                         }}
                       />
                       <WizardField
-                        label="Pronouns"
+                        label="Pronomes"
                         value={draft.user.pronouns}
                         placeholder="e.g. he/him"
                         disabled={isWorking}
@@ -472,7 +472,7 @@ export function AgentCreateWizardModal({
                         }}
                       />
                       <WizardField
-                        label="Timezone"
+                        label="Fuso horário"
                         value={draft.user.timezone}
                         placeholder="e.g. America/Chicago"
                         disabled={isWorking}
@@ -482,7 +482,7 @@ export function AgentCreateWizardModal({
                       />
                       <div className="sm:col-span-2">
                         <WizardField
-                          label="Notes"
+                          label="Notas"
                           value={draft.user.notes}
                           placeholder="e.g. Prefers concise answers and fast iteration."
                           disabled={isWorking}
@@ -493,7 +493,7 @@ export function AgentCreateWizardModal({
                       </div>
                       <div className="sm:col-span-2">
                         <WizardTextAreaField
-                          label="Context"
+                          label="Contexto"
                           value={draft.user.context}
                           placeholder="e.g. Building Claw3D, likes practical UI improvements, and wants direct feedback."
                           disabled={isWorking}

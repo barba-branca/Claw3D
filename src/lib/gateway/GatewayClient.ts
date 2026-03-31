@@ -82,7 +82,7 @@ export const isSameSessionKey = (a: string, b: string) => {
 };
 
 const CONNECT_FAILED_CLOSE_CODE = 4008;
-const GATEWAY_CONNECT_TIMEOUT_MS = 8_000;
+const GATEWAY_CONNECT_TIMEOUT_MS = 20_000;
 
 const parseConnectFailedCloseReason = (
   reason: string
@@ -99,7 +99,10 @@ const parseConnectFailedCloseReason = (
 };
 
 const DEFAULT_UPSTREAM_GATEWAY_URL =
-  process.env.NEXT_PUBLIC_GATEWAY_URL || "ws://localhost:18789";
+  process.env.NEXT_PUBLIC_GATEWAY_URL || "ws://127.0.0.1:18789";
+
+const DEFAULT_UPSTREAM_GATEWAY_TOKEN =
+  process.env.NEXT_PUBLIC_GATEWAY_TOKEN || "claw3d_token";
 
 const normalizeLocalGatewayDefaults = (value: unknown): StudioGatewaySettings | null => {
   if (!value || typeof value !== "object") return null;
@@ -559,7 +562,7 @@ export const useGatewayConnection = (
           token: nextToken,
         };
         setGatewayUrl(nextGatewayUrl);
-        setToken(nextToken);
+        setToken(nextToken || DEFAULT_UPSTREAM_GATEWAY_TOKEN);
       } catch (err) {
         if (!cancelled) {
           const message = err instanceof Error ? err.message : "Failed to load gateway settings.";

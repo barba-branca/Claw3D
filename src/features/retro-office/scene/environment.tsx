@@ -714,7 +714,7 @@ export const WallPictures = memo(function WallPictures({
       <OfficeFlagPole
         position={localFlagPolePosition}
         rotY={0.32}
-        art={<UsaFlagArt />}
+        art={<BrazilFlagArt />}
       />
       {showRemoteOffice ? (
         <OfficeFlagPole

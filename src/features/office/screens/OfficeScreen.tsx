@@ -3972,10 +3972,10 @@ export function OfficeScreen({
       {showOpenClawConsole ? (
         <section className="pointer-events-auto fixed bottom-3 left-3 z-30 flex w-[520px] max-w-[calc(100vw-1.5rem)] flex-col overflow-hidden rounded border border-cyan-500/25 bg-black/78 shadow-2xl backdrop-blur">
           <div className="flex items-center justify-between border-b border-cyan-500/15 px-3 py-2 font-mono text-[11px] uppercase tracking-[0.18em] text-cyan-200/80">
-            <span>OpenClaw Event Console</span>
+            <span>Console de Eventos OpenClaw</span>
             <div className="flex items-center gap-2">
               <span className="text-[10px] text-cyan-100/45">
-                agents {state.agents.length} | events{" "}
+                agentes {state.agents.length} | eventos{" "}
                 {filteredOpenClawLogEntries.length}/{openClawLogEntries.length}
               </span>
               <button
@@ -3986,24 +3986,24 @@ export function OfficeScreen({
                 className="rounded border border-cyan-500/20 px-2 py-0.5 text-[9px] text-cyan-100/70 transition-colors hover:border-cyan-400/45 hover:text-cyan-50"
               >
                 {openClawConsoleCopyStatus === "copied"
-                  ? "Copied"
+                  ? "Copiado"
                   : openClawConsoleCopyStatus === "error"
-                    ? "Copy Failed"
-                    : "Copy JSON"}
+                    ? "Falha ao Copiar"
+                    : "Copiar JSON"}
               </button>
               <button
                 type="button"
                 onClick={handleDownloadOpenClawConsoleJson}
                 className="rounded border border-cyan-500/20 px-2 py-0.5 text-[9px] text-cyan-100/70 transition-colors hover:border-cyan-400/45 hover:text-cyan-50"
               >
-                Download JSON
+                Baixar JSON
               </button>
               <button
                 type="button"
                 onClick={handleClearOpenClawConsole}
                 className="rounded border border-cyan-500/20 px-2 py-0.5 text-[9px] text-cyan-100/70 transition-colors hover:border-cyan-400/45 hover:text-cyan-50"
               >
-                Clear
+                Limpar
               </button>
               <button
                 type="button"
@@ -4012,7 +4012,7 @@ export function OfficeScreen({
                 }
                 className="rounded border border-cyan-500/20 px-2 py-0.5 text-[9px] text-cyan-100/70 transition-colors hover:border-cyan-400/45 hover:text-cyan-50"
               >
-                {openClawConsoleCollapsed ? "Expand" : "Minimize"}
+                {openClawConsoleCollapsed ? "Expandir" : "Minimizar"}
               </button>
             </div>
           </div>
@@ -4194,7 +4194,7 @@ export function OfficeScreen({
             <div className="flex w-44 shrink-0 flex-col border-r border-white/10">
               <div className="flex items-center justify-between border-b border-white/10 px-3 py-2">
                 <span className="font-mono text-[11px] font-semibold uppercase tracking-widest text-white/60">
-                  Agents
+                  Agentes
                 </span>
                 <span className="font-mono text-[10px] text-white/40">
                   {chatRosterEntries.length}
@@ -4203,7 +4203,7 @@ export function OfficeScreen({
               <div className="flex-1 overflow-y-auto">
                 {chatRosterEntries.length === 0 ? (
                   <div className="px-3 py-4 font-mono text-[11px] text-white/30">
-                    No agents.
+                    Sem agentes.
                   </div>
                 ) : (
                   chatRosterEntries.map((agent) => {

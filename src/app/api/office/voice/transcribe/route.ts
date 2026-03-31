@@ -26,21 +26,32 @@ export async function POST(request: Request) {
       );
     }
 
-    const result = await transcribeVoiceWithOpenClaw({
-      buffer: Buffer.from(arrayBuffer),
-      fileName: audio.name,
-      mimeType: audio.type,
-    });
+    try {
+      const result = await transcribeVoiceWithOpenClaw({
+        buffer: Buffer.from(arrayBuffer),
+        fileName: audio.name,
+        mimeType: audio.type,
+      });
 
-    return NextResponse.json({
-      transcript: result.transcript,
-      provider: result.provider,
-      model: result.model,
-      decision: result.decision,
-      ignored: result.ignored,
-    });
+      return NextResponse.json({
+        transcript: result.transcript,
+        provider: result.provider,
+        model: result.model,
+        decision: result.decision,
+        ignored: result.ignored,
+      });
+    } catch (transcriptionError) {
+      console.error("Transcription service error:", transcriptionError);
+      return NextResponse.json(
+        { 
+          error: "O serviço de transcrição demorou muito para responder ou falhou. Tente novamente em alguns instantes.",
+          details: transcriptionError instanceof Error ? transcriptionError.message : String(transcriptionError)
+        }, 
+        { status: 503 } // Service Unavailable
+      );
+    }
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Failed to transcribe audio.";
+    const message = error instanceof Error ? error.message : "Erro inesperado no servidor de áudio.";
     return NextResponse.json({ error: message }, { status: 500 });
   }
 }

@@ -53,11 +53,11 @@ const ASSISTANT_MAX_WIDTH_DEFAULT_CLASS = "max-w-[68ch]";
 const ASSISTANT_MAX_WIDTH_EXPANDED_CLASS = "max-w-[1120px]";
 const CHAT_TOP_THRESHOLD_PX = 8;
 const EMPTY_CHAT_INTRO_MESSAGES = [
-  "How can I help you today?",
-  "What should we accomplish today?",
-  "Ready when you are. What do you want to tackle?",
-  "What are we working on today?",
-  "I'm here and ready. What's the plan?",
+  "Como posso ajudar você hoje?",
+  "O que devemos realizar hoje?",
+  "Pronto quando você estiver. O que quer resolver?",
+  "No que estamos trabalhando hoje?",
+  "Estou pronto. Qual é o plano?",
 ];
 
 const stableStringHash = (value: string): number => {
@@ -161,14 +161,14 @@ const ExecApprovalCard = memo(function ExecApprovalCard({
       data-testid={`exec-approval-card-${approval.id}`}
     >
       <div className="type-meta">
-        Exec approval required
+        Aprovação de execução necessária
       </div>
       <div className="mt-2 rounded-md bg-surface-3 px-2 py-1.5 shadow-2xs">
         <div className="font-mono text-[10px] font-semibold text-foreground">{approval.command}</div>
       </div>
       <div className="mt-2 grid gap-1 text-[11px] text-muted-foreground sm:grid-cols-2">
-        <div>Host: {approval.host ?? "unknown"}</div>
-        <div>Expires: {formatApprovalExpiry(approval.expiresAtMs)}</div>
+        <div>Host: {approval.host ?? "desconhecido"}</div>
+        <div>Expira em: {formatApprovalExpiry(approval.expiresAtMs)}</div>
         {approval.cwd ? <div className="sm:col-span-2">CWD: {approval.cwd}</div> : null}
       </div>
       {approval.error ? (
@@ -182,27 +182,27 @@ const ExecApprovalCard = memo(function ExecApprovalCard({
           className="rounded-md border border-border/70 bg-surface-3 px-2.5 py-1 font-mono text-[12px] font-medium tracking-[0.02em] text-foreground transition hover:bg-surface-2 disabled:cursor-not-allowed disabled:opacity-60"
           onClick={() => onResolve?.(approval.id, "allow-once")}
           disabled={disabled}
-          aria-label={`Allow once for exec approval ${approval.id}`}
+          aria-label={`Permitir uma única vez para a aprovação ${approval.id}`}
         >
-          Allow once
+          Permitir uma vez
         </button>
         <button
           type="button"
           className="rounded-md border border-border/70 bg-surface-3 px-2.5 py-1 font-mono text-[12px] font-medium tracking-[0.02em] text-foreground transition hover:bg-surface-2 disabled:cursor-not-allowed disabled:opacity-60"
           onClick={() => onResolve?.(approval.id, "allow-always")}
           disabled={disabled}
-          aria-label={`Always allow for exec approval ${approval.id}`}
+          aria-label={`Sempre permitir para a aprovação ${approval.id}`}
         >
-          Always allow
+          Sempre permitir
         </button>
         <button
           type="button"
           className="ui-btn-danger rounded-md px-2.5 py-1 font-mono text-[12px] font-medium tracking-[0.02em] transition disabled:cursor-not-allowed disabled:opacity-60"
           onClick={() => onResolve?.(approval.id, "deny")}
           disabled={disabled}
-          aria-label={`Deny exec approval ${approval.id}`}
+          aria-label={`Negar a aprovação ${approval.id}`}
         >
-          Deny
+          Negar
         </button>
       </div>
     </div>
@@ -292,7 +292,7 @@ const ThinkingDetailsRow = memo(function ThinkingDetailsRow({
         <ChevronRight className="h-3 w-3 shrink-0 transition group-open:rotate-90" />
         <span className="flex min-w-0 items-center gap-2">
           <span className="font-mono text-[10px] font-medium tracking-[0.02em]">
-            Thinking (internal)
+            Pensando (interno)
           </span>
           {typeof durationMs === "number" ? (
             <span className="inline-flex items-center gap-1 font-mono text-[10px] font-medium tracking-[0.02em] text-muted-foreground/80">
@@ -344,7 +344,7 @@ const UserMessageCard = memo(function UserMessageCard({
     <div className="ui-chat-user-card w-full max-w-[70ch] self-end overflow-hidden rounded-[var(--radius-small)] bg-[color:var(--chat-user-bg)]">
       <div className="flex items-center justify-between gap-3 bg-[color:var(--chat-user-header-bg)] px-3 py-2 dark:px-3.5 dark:py-2.5">
         <div className="type-meta min-w-0 truncate font-mono text-foreground/90">
-          You
+          Você
         </div>
         {typeof timestampMs === "number" ? (
           <time className="type-meta shrink-0 rounded-md bg-surface-3 px-2 py-0.5 font-mono text-muted-foreground/70">
@@ -419,7 +419,7 @@ const AssistantMessageCard = memo(function AssistantMessageCard({
             data-testid="agent-typing-indicator"
           >
             <span className="font-mono text-[10px] font-medium tracking-[0.02em]">
-              Thinking
+              Pensando
             </span>
             <span className="typing-dots" aria-hidden="true">
               <span />
@@ -437,7 +437,7 @@ const AssistantMessageCard = memo(function AssistantMessageCard({
                 data-testid="agent-typing-indicator"
               >
                 <span className="font-mono text-[10px] font-medium tracking-[0.02em]">
-                  Thinking
+                  Pensando
                 </span>
                 <span className="typing-dots" aria-hidden="true">
                   <span />
@@ -523,7 +523,7 @@ const AssistantIntroCard = memo(function AssistantIntroCard({
         <div className="ui-chat-assistant-card mt-2">
           <div className="text-[14px] leading-[1.65] text-foreground">{title}</div>
           <div className="mt-2 font-mono text-[10px] tracking-[0.03em] text-muted-foreground/80">
-            Try describing a task, bug, or question to get started.
+            Tente descrever uma tarefa, bug ou pergunta para começar.
           </div>
         </div>
       </div>
@@ -751,15 +751,15 @@ const AgentChatTranscript = memo(function AgentChatTranscript({
           {historyMaybeTruncated && isAtTop ? (
             <div className="-mx-1 flex items-center justify-between gap-3 rounded-md bg-surface-2 px-3 py-2 shadow-2xs">
               <div className="type-meta min-w-0 truncate font-mono text-muted-foreground">
-                Showing most recent {typeof historyFetchedCount === "number" ? historyFetchedCount : "?"} messages
-                {typeof historyFetchLimit === "number" ? ` (limit ${historyFetchLimit})` : ""}
+                Mostrando as {typeof historyFetchedCount === "number" ? historyFetchedCount : "?"} mensagens mais recentes
+                {typeof historyFetchLimit === "number" ? ` (limite ${historyFetchLimit})` : ""}
               </div>
               <button
                 type="button"
                 className="shrink-0 rounded-md border border-border/70 bg-surface-3 px-3 py-1.5 font-mono text-[12px] font-medium tracking-[0.02em] text-foreground transition hover:bg-surface-2"
                 onClick={onLoadMoreHistory}
               >
-                Load more
+                Carregar mais
               </button>
             </div>
           ) : null}
@@ -1054,7 +1054,7 @@ const AgentChatComposer = memo(function AgentChatComposer({
                   className="flex w-full min-w-0 max-w-full items-center gap-1 overflow-hidden rounded-md border border-border/70 bg-card/80 px-2 py-1 text-[11px] text-foreground"
                 >
                   <span className="font-mono text-[10px] uppercase tracking-[0.06em] text-muted-foreground">
-                    Queued
+                    Na fila
                   </span>
                   <span
                     className="min-w-0 flex-1 overflow-hidden text-ellipsis whitespace-nowrap"
@@ -1092,7 +1092,7 @@ const AgentChatComposer = memo(function AgentChatComposer({
               disabled
               className="ui-btn-primary ui-btn-send invisible px-3 py-2 font-mono text-[12px] font-medium tracking-[0.02em]"
             >
-              Send
+              Enviar
             </button>
           </div>
         ) : null}
@@ -1116,7 +1116,7 @@ const AgentChatComposer = memo(function AgentChatComposer({
             className="chat-composer-input min-h-[64px] flex-1 resize-none border-0 bg-transparent px-0 py-1 text-[15px] leading-6 text-foreground outline-none shadow-none transition placeholder:text-muted-foreground/65 focus:outline-none focus-visible:outline-none focus-visible:ring-0"
             onChange={onChange}
             onKeyDown={onKeyDown}
-            placeholder="type a message"
+            placeholder="digite uma mensagem"
           />
           {voiceEnabled ? (
             <button
@@ -1147,7 +1147,7 @@ const AgentChatComposer = memo(function AgentChatComposer({
                 disabled={stopDisabled}
                 aria-label={stopAriaLabel}
               >
-                {stopBusy ? "Stopping" : "Stop"}
+                {stopBusy ? "Parando" : "Parar"}
               </button>
             </span>
           ) : null}
@@ -1157,7 +1157,7 @@ const AgentChatComposer = memo(function AgentChatComposer({
             onClick={onSend}
             disabled={sendDisabled}
           >
-            Send
+            Enviar
           </button>
         </div>
       </div>
@@ -1572,15 +1572,15 @@ export const AgentChatPanel = ({
               }}
               disabled={newSessionDisabled}
             >
-              {newSessionBusy ? "Starting..." : "New session"}
+              {newSessionBusy ? "Iniciando..." : "Nova sessão"}
             </button>
             <button
               className="nodrag ui-btn-icon"
               style={{ "--ui-btn-icon-size": "1.25rem" } as React.CSSProperties}
               type="button"
               data-testid="agent-settings-toggle"
-              aria-label="Open behavior"
-              title="Behavior"
+              aria-label="Abrir comportamento"
+              title="Comportamento"
               onClick={onOpenSettings}
             >
               <Cog className="h-3.5 w-3.5" />

@@ -2315,7 +2315,7 @@ export function RetroOffice3D({
   monitorByAgentId = EMPTY_MONITOR_MAP,
   githubSkill = null,
   soundclawEnabled = false,
-  officeTitle = "Luke Headquarters",
+  officeTitle = "Barba-branca",
   officeTitleLoaded = false,
   remoteOfficeEnabled = false,
   remoteOfficeSourceKind = "presence_endpoint",
