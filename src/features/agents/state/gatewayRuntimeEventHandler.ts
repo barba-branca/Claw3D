@@ -37,6 +37,8 @@ import {
 } from "@/lib/text/message-extract";
 import { planRuntimeChatEvent } from "@/features/agents/state/runtimeChatEventWorkflow";
 import { planRuntimeAgentEvent } from "@/features/agents/state/runtimeAgentEventWorkflow";
+import { handleOutputHandover, type HandoverTag } from "@/features/orchestration/logic/HandoverObserver";
+
 
 // This module is the runtime event orchestrator. It keeps one gateway intake path, maps
 // transport-specific session keys back to agents, delegates stream-specific planning to the
@@ -71,7 +73,9 @@ export type GatewayRuntimeEventHandlerDeps = {
   }) => boolean;
 
   updateSpecialLatestUpdate: (agentId: string, agent: AgentState, message: string) => void;
+  onHandover?: (agentId: string, tag: HandoverTag) => void;
 };
+
 
 export type GatewayRuntimeEventHandler = {
   handleEvent: (event: EventFrame) => void;
@@ -392,7 +396,14 @@ export function createGatewayRuntimeEventHandler(
     });
     coordinatorState = reduced.state;
     executeCoordinatorEffects(reduced.effects);
+
+    if (payload.state === "final" && finalAssistantText && deps.onHandover) {
+      handleOutputHandover(agentId, finalAssistantText, (id, tag) => {
+        deps.onHandover?.(id, tag);
+      });
+    }
   };
+
 
   const handleRuntimeAgentEvent = (payload: AgentEventPayload) => {
     if (!payload.runId) return;

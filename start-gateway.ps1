@@ -1,58 +1,101 @@
 Write-Host "`n--- Claw3D Gateway Starter ---" -ForegroundColor Cyan
 
-# Verificação inicial: O modelo qwen3.5:0.8b está disponível no Ollama?
-Write-Host "-> Verificando se o modelo qwen3.5:0.8b está disponível no Ollama..." -ForegroundColor Yellow
-$ollamaList = ollama list
-if ($ollamaList -notmatch "qwen3.5:0.8b") {
-    Write-Host "`n! AVISO: Modelo qwen3.5:0.8b não encontrado. Baixando agora (0.8b - Super Leve)..." -ForegroundColor Cyan
-    ollama pull qwen3.5:0.8b
-    if ($LASTEXITCODE -ne 0) {
-        Write-Host "`n! ERRO FATAL: Falha ao baixar o modelo. Verifique se o Ollama está rodando e se há conexão com a internet." -ForegroundColor Red
-        exit 1
+# Carregar variáveis de ambiente do .env se existir
+if (Test-Path .env) {
+    Get-Content .env | Where-Object { $_ -match '=' -and $_ -notmatch '^#' } | ForEach-Object {
+        $name, $value = $_.Split('=', 2)
+        [System.Environment]::SetEnvironmentVariable($name.Trim(), $value.Trim().Trim('"').Trim("'"), "Process")
     }
-    Write-Host "[OK] Modelo baixado com sucesso!" -ForegroundColor Green
+    Write-Host "-> Variáveis de ambiente carregadas do .env" -ForegroundColor Gray
 }
-Write-Host "[OK] Modelo qwen3.5:0.8b detectado!" -ForegroundColor Green
-Write-Host "Utilizando cérebro Qwen 3.5 (0.8b) - Super Rápido" -ForegroundColor Green
 
-# 1. Verifica se a porta 18789 já está ocupada
+
+# Verificação inicial: O modelo configurado está disponível?
+# Para modelos de nuvem (ex: /kimi-k2.5:cloud), pulamos a verificação do Ollama local.
+$currentModel = $env:OLLAMA_MODEL
+if ($null -eq $currentModel) { $currentModel = "qwen3.5:1.5b" } # fallback se não definido
+
+if ($currentModel -match "^/" -or $currentModel -match "^moonshot/" -or $currentModel -match ":cloud$") {
+    Write-Host "-> Utilizando modelo em nuvem: $currentModel" -ForegroundColor Cyan
+} else {
+    Write-Host "-> Verificando se o modelo $currentModel está disponível no Ollama..." -ForegroundColor Yellow
+    $ollamaList = ollama list 2>$null
+    if ($LASTEXITCODE -ne 0) {
+        Write-Host "! AVISO: Ollama não detectado ou não está no PATH." -ForegroundColor Yellow
+        Write-Host "O Gateway tentará usar provedores remotos se configurados." -ForegroundColor Gray
+    } elseif ($ollamaList -notmatch [regex]::Escape($currentModel)) {
+        Write-Host "`n! AVISO: Modelo $currentModel não encontrado no Ollama." -ForegroundColor Yellow
+        Write-Host "Tentando baixar modelo $currentModel..." -ForegroundColor Gray
+        ollama pull $currentModel
+        if ($LASTEXITCODE -ne 0) {
+            Write-Host "Aguardando inicialização manual ou uso de API remota..." -ForegroundColor Cyan
+        } else {
+            Write-Host "[OK] Modelo baixado com sucesso!" -ForegroundColor Green
+        }
+    } else {
+        Write-Host "[OK] Modelo $currentModel detectado localmente!" -ForegroundColor Green
+    }
+}
+
+
+# 1. Verifica e limpa a porta 18789 se já estiver ocupada
 Write-Host "-> Verificando se a porta 18789 já está em uso..." -ForegroundColor Yellow
 $occupied = Get-NetTCPConnection -LocalPort 18789 -ErrorAction SilentlyContinue
 
 if ($occupied) {
-    Write-Host "`n! AVISO: A porta 18789 já está ocupada por outro processo." -ForegroundColor Yellow
-    Write-Host "O Gateway pode já estar ativo. Se precisar reiniciar, feche a porta primeiro." -ForegroundColor White
+    Write-Host "`n! AVISO: A porta 18789 já está ocupada. Encerrando processos antigos..." -ForegroundColor Yellow
+
+    # Obter PIDs dos processos na porta 18789
+    $processes = Get-NetTCPConnection -LocalPort 18789 -ErrorAction SilentlyContinue | Select-Object -ExpandProperty OwningProcess
+    foreach ($procId in $processes) {
+        try {
+            Stop-Process -Id $procId -Force -ErrorAction Stop
+            Write-Host "Processo $procId encerrado com sucesso." -ForegroundColor Gray
+        } catch {
+            Write-Host "Falha ao encerrar processo $procId - pode estar em uso pelo sistema." -ForegroundColor Yellow
+        }
+    }
+    Start-Sleep -Seconds 2
 }
 
-# 2. Inicia o Gateway em uma nova janela (com RESET de estado e logs coletados)
-$env:OPENCLAW_AUTH_DISABLE = "true"
-$env:OPENCLAW_TOKEN = "claw3d_token"
-$env:OPENCLAW_PRICING_BOOTSTRAP_DISABLE = "true"
-$env:OPENCLAW_CLEAN = "true"
+# 2. Inicia o Gateway em uma nova janela
+Write-Host "-> Configurando modelo padrão para $currentModel..." -ForegroundColor Yellow
+npx openclaw models set "$currentModel"
 
-Write-Host "-> Ativando modo Bypass de Segurança ($env:OPENCLAW_AUTH_DISABLE)..." -ForegroundColor Yellow
-Write-Host "-> Definindo Token Estático ($env:OPENCLAW_TOKEN)..." -ForegroundColor Yellow
-Write-Host "-> Forçando RESET de sessões e execuções anteriores (OpenClaw Clean Mode)..." -ForegroundColor Yellow
+Write-Host "-> Iniciando o Gateway através da configuração estável..." -ForegroundColor Yellow
 
-# Redirecionamos o output para gateway-debug.log para facilitar o diagnóstico de erro
-$gatewayCommand = "`$env:OPENCLAW_AUTH_DISABLE = 'true'; `$env:OPENCLAW_TOKEN = 'claw3d_token'; `$env:OPENCLAW_PRICING_BOOTSTRAP_DISABLE = 'true'; `$env:OPENCLAW_CLEAN = 'true'; npx openclaw gateway --host 127.0.0.1 --port 18789 2>&1 | Tee-Object gateway-debug.log"
+# Comando com melhor logging: captura erros do Python e redirecionamentos
+$gatewayCommand = @"
+`$ErrorActionPreference = 'Continue'
+`$envToken = if (`$env:NEXT_PUBLIC_GATEWAY_TOKEN) { `$env:NEXT_PUBLIC_GATEWAY_TOKEN } else { "claw3d_token" }
+npx openclaw gateway --port 18789 --token "`$envToken" 2>&1 | Tee-Object -FilePath gateway-ps.log
+"@
 Start-Process powershell -ArgumentList "-NoExit", "-Command", $gatewayCommand
-Write-Host "OK: Gateway iniciado em nova janela (Monitorando logs em gateway-debug.log)." -ForegroundColor Green
+Write-Host "OK: Gateway iniciado em nova janela com logging ativado." -ForegroundColor Green
 
 Write-Host "Atenção: Mantenha a nova janela do PowerShell aberta para os agentes de IA funcionarem." -ForegroundColor White
-Write-Host "Aguardando 15 segundos para o startup do serviço e warmup do cérebro..." -ForegroundColor Gray
-Start-Sleep -s 15
+Write-Host "Aguardando o startup do serviço e warmup do cérebro..." -ForegroundColor Gray
 
-# 3. Teste final de conexão
-Write-Host "`n-> Confirmando se o 'cérebro' da IA subiu com sucesso..." -ForegroundColor Cyan
-$test = Test-NetConnection -ComputerName 127.0.0.1 -Port 18789 -InformationLevel Quiet
+# Loop de espera por conexão
+$maxRetries = 20
+$retryCount = 0
+$operational = $false
 
-if ($test) {
+while ($retryCount -lt $maxRetries) {
+    $retryCount++
+    Write-Host "Aguardando Gateway (Tentativa $retryCount/$maxRetries)..." -ForegroundColor Gray
+    if (Test-NetConnection -ComputerName 127.0.0.1 -Port 18789 -InformationLevel Quiet) {
+        $operational = $true
+        break
+    }
+    Start-Sleep -s 2
+}
+
+if ($operational) {
     Write-Host "`n[SUCESSO] O Gateway está OPERACIONAL e pronto para receber conexões!" -ForegroundColor Green
 } else {
     Write-Host "`n[AVISO] Não foi possível confirmar a conexão na porta 18789." -ForegroundColor Yellow
     Write-Host "Confira o arquivo gateway-debug.log para ver o erro retornado." -ForegroundColor Cyan
-    Write-Host "Verifique se a nova janela do terminal apresenta algum erro de inicialização." -ForegroundColor White
 }
 
 # 4. Auto-aprovação do dispositivo local (com retentativas)
@@ -63,7 +106,8 @@ for ($i=1; $i -le 3; $i++) {
     Write-Host "Tentativa de aprovação $i de 3..." -ForegroundColor Gray
     
     # Captura o output para verificar se o erro é apenas 'sem dispositivos pendentes'
-    $approveOutput = npx openclaw devices approve --latest --host 127.0.0.1 2>&1 | Out-String
+    $envToken = if ($env:NEXT_PUBLIC_GATEWAY_TOKEN) { $env:NEXT_PUBLIC_GATEWAY_TOKEN } else { "claw3d_token" }
+    $approveOutput = npx openclaw devices approve --latest --token "$envToken" 2>&1 | Out-String
     $approveCode = $LASTEXITCODE
 
     if ($approveCode -eq 0 -or $approveOutput -match "No pending device pairing requests") {

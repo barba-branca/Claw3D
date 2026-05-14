@@ -3,7 +3,7 @@
 # Este script limpa o ambiente, sobe o Gateway e inicia o servidor Next.js.
 
 Write-Host "`n==============================================" -ForegroundColor Cyan
-Write-Host "   CLAW3D MASTER BOOT SEQUENCE (Qwen Edition)" -ForegroundColor Cyan
+Write-Host "   CLAW3D MASTER BOOT SEQUENCE (Kimi Edition)" -ForegroundColor Cyan
 Write-Host "==============================================`n" -ForegroundColor Cyan
 
 # 1. Limpeza Profunda (Locks, Runs e Processos)

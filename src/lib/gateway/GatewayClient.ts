@@ -82,7 +82,7 @@ export const isSameSessionKey = (a: string, b: string) => {
 };
 
 const CONNECT_FAILED_CLOSE_CODE = 4008;
-const GATEWAY_CONNECT_TIMEOUT_MS = 20_000;
+const GATEWAY_CONNECT_TIMEOUT_MS = 60_000;
 
 const parseConnectFailedCloseReason = (
   reason: string

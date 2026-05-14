@@ -151,6 +151,10 @@ function createGatewayProxy(options) {
             ...frame,
             params: injectAuthToken(frame.params, upstreamToken),
           };
+      
+      if (log) {
+        log(`Forwarding connect frame. browserHasAuth=${browserHasAuth} upstreamToken=${upstreamToken ? "present" : "missing"}`);
+      }
       upstreamWs.send(JSON.stringify(connectFrame));
     };
 

@@ -14,15 +14,9 @@ import {
   Users,
   X,
 } from "lucide-react";
-import {
-  memo,
-  Suspense,
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import { Suspense, useCallback, useEffect, useMemo, useRef, useState, memo } from "react";
+import { useOrchestration } from "@/features/orchestration/state/store";
+
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Environment, OrbitControls } from "@react-three/drei";
 import * as THREE from "three";
@@ -198,21 +192,19 @@ import {
   WallPictures as SceneWallPictures,
 } from "@/features/retro-office/scene/environment";
 import {
-  CAMERA_PRESETS as CAMERA_PRESET_MAP,
-  CameraAnimator as CameraPresetAnimator,
   FollowCamController as FollowCamSystem,
+  CAMERA_PRESETS,
 } from "@/features/retro-office/systems/cameraLighting";
+
 import {
   FloorRaycaster as SceneFloorRaycaster,
   GameLoop as SceneGameLoop,
   PingPongBall as ScenePingPongBall,
   SpotlightEffect as SceneSpotlightEffect,
 } from "@/features/retro-office/systems/sceneRuntime";
-import {
-  DeskNameplates as DeskNameplateOverlay,
-  HeatmapSystem as AgentHeatmapSystem,
-  TrailSystem as AgentTrailSystem,
-} from "@/features/retro-office/systems/visualSystems";
+import { TrailSystem as AgentTrailSystem } from "@/features/retro-office/systems/visualSystems";
+import { OrchestrationPanel } from "@/features/orchestration/components/OrchestrationPanel";
+
 import type { OfficeCleaningCue } from "@/lib/office/janitorReset";
 
 type OfficeDeskMonitorMap = Record<string, OfficeDeskMonitor>;
@@ -2451,6 +2443,29 @@ export function RetroOffice3D({
   onOpenGithubSkillSetup?: () => void;
   onJukeboxInteract?: () => void;
 }) {
+  const { state: orchState } = useOrchestration();
+  const prevPhaseRef = useRef(orchState.phase);
+
+  const { camera } = useThree();
+
+  useEffect(() => {
+    if (orchState.phase !== prevPhaseRef.current) {
+      prevPhaseRef.current = orchState.phase;
+      
+      switch (orchState.phase) {
+        case "discovery":
+          cameraPresetRef.current = CAMERA_PRESETS.overview;
+          break;
+        case "development":
+          cameraPresetRef.current = CAMERA_PRESETS.frontDesk;
+          break;
+        case "testing":
+          cameraPresetRef.current = CAMERA_PRESETS.lounge;
+          break;
+      }
+    }
+  }, [orchState.phase]);
+
   const resolvedCleaningCues = animationState?.cleaningCues ?? cleaningCues;
   const resolvedDanceUntilByAgentId =
     animationState?.danceUntilByAgentId ?? EMPTY_NUMBER_RECORD;
@@ -2577,11 +2592,7 @@ export function RetroOffice3D({
     standupMeeting?.phase === "gathering" ||
     standupMeeting?.phase === "in_progress";
   // New Idea 2: camera preset target ref (shared into Canvas).
-  const cameraPresetRef = useRef<{
-    pos: [number, number, number];
-    target: [number, number, number];
-    zoom?: number;
-  } | null>(null);
+  const cameraPresetRef = useRef<CameraPreset | null>(null);
   // New Idea 7: heatmap mode.
   const [heatmapMode, setHeatmapMode] = useState(false);
   const [trailMode, setTrailMode] = useState(false);
@@ -2596,7 +2607,7 @@ export function RetroOffice3D({
   const [spotlightAgentId, setSpotlightAgentId] = useState<string | null>(null);
   const [settingsModalOpen, setSettingsModalOpen] = useState(false);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const orbitRef = useRef<any>(null);
+  const orbitRef = useRef<OrbitControls | null>(null);
   // Follow cam: which agent to trail with a third-person perspective camera.
   const [followAgentId, setFollowAgentId] = useState<string | null>(null);
   const followAgentIdRef = useRef<string | null>(null);
@@ -6887,6 +6898,7 @@ export function RetroOffice3D({
             </>
           )}
         </div>
+        <OrchestrationPanel />
       </div>
       <style>{`
         @keyframes eq-bar {

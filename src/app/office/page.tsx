@@ -1,6 +1,8 @@
 import { Suspense } from "react";
 import { AgentStoreProvider } from "@/features/agents/state/store";
 import { OfficeScreen } from "@/features/office/screens/OfficeScreen";
+import { OrchestrationProvider } from "@/features/orchestration/state/store";
+
 
 const ENABLED_RE = /^(1|true|yes|on)$/i;
 
@@ -32,9 +34,12 @@ export default function OfficePage() {
 
   return (
     <AgentStoreProvider>
-      <Suspense fallback={<OfficeLoadingFallback />}>
-        <OfficeScreen showOpenClawConsole={showOpenClawConsole} />
-      </Suspense>
+      <OrchestrationProvider>
+        <Suspense fallback={<OfficeLoadingFallback />}>
+          <OfficeScreen showOpenClawConsole={showOpenClawConsole} />
+        </Suspense>
+      </OrchestrationProvider>
     </AgentStoreProvider>
+
   );
 }

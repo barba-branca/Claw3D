@@ -16,6 +16,14 @@ foreach ($dir in $dirsToClear) {
     }
 }
 
+# 1.1 Limpar arquivos de backup 'clobbered' que podem travar o sistema
+Write-Host "-> Removendo backups clobbered do openclaw.json..." -ForegroundColor Yellow
+$clobberedFiles = Get-ChildItem "$openclawHome\openclaw.json.clobbered.*" -ErrorAction SilentlyContinue
+if ($clobberedFiles) {
+    $clobberedFiles | Remove-Item -Force
+    Write-Host "OK: $($clobberedFiles.Count) arquivos clobbered removidos." -ForegroundColor Green
+}
+
 # 2. Garantir a exclusão do lock do Next.js no projeto local
 Write-Host "`n-> Removendo Trava do Next.js (.next\dev\lock)..." -ForegroundColor Yellow
 $lockPath = Join-Path $PSScriptRoot ".next\dev\lock"
@@ -24,7 +32,8 @@ if (Test-Path $lockPath) {
     Write-Host "OK: Lock do Next.js removido." -ForegroundColor Green
 }
 
-# 3. Encerrar processos zumbis nas portas 3000 e 18789
+# 3. Encerrar processos zumbis nas portas 3000, 18789 e Agendados
+schtasks /End /TN "OpenClaw Gateway" 2>$null
 Write-Host "`n-> Encerrando processos zumbis (Portas 3000, 18789)..." -ForegroundColor Yellow
 $ports = 3000, 18789
 foreach ($port in $ports) {

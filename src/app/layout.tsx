@@ -40,7 +40,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className={`${display.variable} ${sans.variable} ${mono.variable} antialiased`}>
+      <body className={`${display.variable} ${sans.variable} ${mono.variable} antialiased`} suppressHydrationWarning>
         <main className="h-screen w-screen overflow-hidden bg-background">{children}</main>
       </body>
     </html>

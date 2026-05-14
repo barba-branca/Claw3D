@@ -138,8 +138,12 @@ import {
   type VoiceSendPayload,
 } from "@/hooks/useVoiceRecorder";
 import { useVoiceReplyPlayback } from "@/hooks/useVoiceReplyPlayback";
+import { useOrchestration, OrchestrationProvider } from "@/features/orchestration/state/store";
+
+import { getPhaseFromTag } from "@/features/orchestration/logic/HandoverObserver";
 import {
   buildOfficeAnimationState,
+
   clearOfficeAnimationTriggerHold,
   createOfficeAnimationTriggerState,
   reconcileOfficeAnimationTriggerState,
@@ -821,7 +825,17 @@ export function OfficeScreen({
     useGatewayConnection(settingsCoordinator);
   const { state, dispatch, hydrateAgents, setError, setLoading } =
     useAgentStore();
+  const { state: orchState, dispatch: orchDispatch } = useOrchestration();
+
+
   const [agentsLoaded, setAgentsLoaded] = useState(false);
+  const [animationNowMs, setAnimationNowMs] = useState(Date.now());
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setAnimationNowMs(Date.now());
+    }, 1000); // Throttled to 1s
+    return () => clearInterval(interval);
+  }, []);
   const [didAttemptGatewayConnect, setDidAttemptGatewayConnect] = useState(false);
   const [clockTick, setClockTick] = useState(0);
   const [debugRows, setDebugRows] = useState<OfficeDebugRow[]>([]);
@@ -1348,6 +1362,12 @@ export function OfficeScreen({
         }
         lastGatewayActivityAtRef.current = Date.now();
         setAgentsLoaded(true);
+      } catch (err) {
+        if (!isGatewayDisconnectLikeError(err)) {
+          console.error("Failed to load agents.", err);
+        }
+        // Set loaded true even on failure to prevent infinite retry loop
+        setAgentsLoaded(true);
       } finally {
         if (!options?.silent) {
           setLoading(false);
@@ -1363,9 +1383,9 @@ export function OfficeScreen({
     dispatch,
     gatewayUrl,
     hydrateAgents,
-    loadStudioSettings,
     setError,
     setLoading,
+    settingsCoordinator,
     status,
   ]);
 
@@ -1916,9 +1936,10 @@ export function OfficeScreen({
     if (status !== "connected") return;
     if (state.loading) return;
     if (state.agents.length > 0) return;
+    // Increased timeout to 5s to prevent hammering if no agents are found
     const timeoutId = window.setTimeout(() => {
       void loadAgents({ forceSettings: true });
-    }, 500);
+    }, 5000);
     return () => {
       window.clearTimeout(timeoutId);
     };
@@ -1936,7 +1957,9 @@ export function OfficeScreen({
       loadAgentsInFlightRef.current = null;
       gatewayConfigSnapshot.current = null;
       lastLoadAgentsStartedAtRef.current = 0;
-      hydrateAgents([]);
+      if (state.agents.length > 0) {
+        hydrateAgents([]);
+      }
       setFeedEvents([]);
       setDebugRows([]);
       setRunCountByAgentId({});
@@ -2044,7 +2067,12 @@ export function OfficeScreen({
       isDisconnectLikeError: isGatewayDisconnectLikeError,
       logWarn: (message, meta) => console.warn(message, meta),
       updateSpecialLatestUpdate: () => {},
+      onHandover: (agentId, tag) => {
+        const nextPhase = getPhaseFromTag(tag);
+        orchDispatch({ type: "setPhase", phase: nextPhase });
+      },
     });
+
 
     // Run reconciliation before subscribing to events so dedup keys are
     // populated in the trigger state. This prevents stale gateway event
@@ -2148,14 +2176,20 @@ export function OfficeScreen({
     };
   }, [agentsLoaded, loadAgents, status]);
 
+
   useEffect(() => {
-    setOfficeTriggerState((previous) =>
-      reconcileOfficeAnimationTriggerState({
-        state: previous,
-        agents: state.agents,
-      }),
-    );
-  }, [state.agents]);
+    // Throttled reconciliation: only run when agents change OR on the 1s animation timer.
+    // We pass animationNowMs to ensure stable values for 'workingUntil' and other time-based holds.
+    const next = reconcileOfficeAnimationTriggerState({
+      state: officeTriggerState,
+      agents: state.agents,
+      nowMs: animationNowMs,
+    });
+    // Deep equality check to prevent infinite loop
+    if (JSON.stringify(next) !== JSON.stringify(officeTriggerState)) {
+      setOfficeTriggerState(next);
+    }
+  }, [state.agents, officeTriggerState, animationNowMs]);
 
   useEffect(() => {
     setMarketplaceGymHoldByAgentId((previous) => {
@@ -2319,7 +2353,7 @@ export function OfficeScreen({
     status,
     agents: state.agents,
   });
-  const animationNowMs = Date.now();
+
   const officeAnimationState = useMemo(() => {
     const base = buildOfficeAnimationState({
       state: officeTriggerState,
@@ -2440,20 +2474,22 @@ export function OfficeScreen({
   }, [activeGithubReviewAgentId]);
 
   useEffect(() => {
-    if (!activeGithubReviewAgentId) return;
-    setSelectedChatAgentId(activeGithubReviewAgentId);
-    dispatch({ type: "selectAgent", agentId: activeGithubReviewAgentId });
-  }, [activeGithubReviewAgentId, dispatch]);
+    if (activeGithubReviewAgentId && activeGithubReviewAgentId !== selectedChatAgentId) {
+      setSelectedChatAgentId(activeGithubReviewAgentId);
+      dispatch({ type: "selectAgent", agentId: activeGithubReviewAgentId });
+    }
+  }, [activeGithubReviewAgentId, selectedChatAgentId, dispatch]);
 
   useEffect(() => {
     setQaTestingAgentId(activeQaTestingAgentId);
   }, [activeQaTestingAgentId]);
 
   useEffect(() => {
-    if (!activeQaTestingAgentId) return;
-    setSelectedChatAgentId(activeQaTestingAgentId);
-    dispatch({ type: "selectAgent", agentId: activeQaTestingAgentId });
-  }, [activeQaTestingAgentId, dispatch]);
+    if (activeQaTestingAgentId && activeQaTestingAgentId !== selectedChatAgentId) {
+      setSelectedChatAgentId(activeQaTestingAgentId);
+      dispatch({ type: "selectAgent", agentId: activeQaTestingAgentId });
+    }
+  }, [activeQaTestingAgentId, selectedChatAgentId, dispatch]);
 
   useEffect(() => {
     const activeKeys = new Set(
